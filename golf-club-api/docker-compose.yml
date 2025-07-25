@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: golfclub-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: TryingMyBest
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_DATABASE: golfclubdb
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - golfclub-net
+
+  app:
+    build: .
+    container_name: golfclub-api
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL:      jdbc:mysql://mysql:3306/golfclubdb
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: TryingMyBest
+    depends_on:
+      - mysql
+    networks:
+      - golfclub-net
+
+volumes:
+  mysql_data:
+
+networks:
+  golfclub-net:
